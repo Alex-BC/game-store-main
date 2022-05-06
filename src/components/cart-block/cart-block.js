@@ -1,12 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import { BiCartAlt } from "react-icons/bi";
+import { CartMenu } from "../cart-menu";
+import { ItemsInCart } from "../items-in-cart";
 import "./cart-block.css";
+import { calcTotalPrice } from "../utils";
 
 export const CartBlock = () => {
+  const [isCartMenuVisible, setIsCartMenuVisible] = useState(false);
+  const items = useSelector((state) => state.cart.itemsInCart); //отримуємо масив, який в кошику
+  const totalPrice = calcTotalPrice(items);
+
   return (
     <div className="cart-block">
-      <BiCartAlt size={25} className="cart-icon" />
-      <span className="total-price"> 2313 грн. </span>
+      <ItemsInCart quantity={items.length} />
+      <BiCartAlt
+        size={25}
+        className="cart-icon"
+        onClick={() => setIsCartMenuVisible(!isCartMenuVisible)}
+      />
+      {totalPrice > 0 ? (
+        <span className="total-price"> {totalPrice} грн. </span>
+      ) : null}
+      {isCartMenuVisible && <CartMenu items={items} onClick={() => null} />}
     </div>
   );
 };
